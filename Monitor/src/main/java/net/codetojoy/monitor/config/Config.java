@@ -2,6 +2,7 @@ package net.codetojoy.monitor.config;
 
 import net.codetojoy.common.PingService;
 import net.codetojoy.common.PongService;
+import net.codetojoy.common.rmi.Constants;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
@@ -20,7 +21,7 @@ public class Config {
     public RmiProxyFactoryBean pingService() {
         RmiProxyFactoryBean pingService = new RmiProxyFactoryBean();
 
-        pingService.setServiceUrl("rmi://localhost:2020/pingServiceEndpoint");
+        pingService.setServiceUrl(Constants.PING_SERVICE_URI);
         pingService.setServiceInterface(net.codetojoy.common.PingService.class);
         pingService.setRefreshStubOnConnectFailure(true);
 
@@ -32,7 +33,7 @@ public class Config {
     public RmiProxyFactoryBean pongService() {
         RmiProxyFactoryBean pongService = new RmiProxyFactoryBean();
 
-        pongService.setServiceUrl("rmi://localhost:2020/pongServiceEndpoint");
+        pongService.setServiceUrl(Constants.PONG_SERVICE_URI);
         pongService.setServiceInterface(net.codetojoy.common.PongService.class);
         pongService.setRefreshStubOnConnectFailure(true);
 

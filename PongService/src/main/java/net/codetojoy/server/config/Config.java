@@ -1,6 +1,7 @@
 package net.codetojoy.server.config;
 
 import net.codetojoy.common.PongService;
+import net.codetojoy.common.rmi.Constants;
 import net.codetojoy.server.PongServiceImpl;
 
 import org.springframework.context.annotation.Bean;
@@ -21,8 +22,8 @@ public class Config {
     public RmiRegistryFactoryBean myRegistry() {
         RmiRegistryFactoryBean result = new RmiRegistryFactoryBean();
 
-        result.setHost("127.0.0.1");
-        result.setPort(2020);
+        result.setHost(Constants.HOST);
+        result.setPort(Constants.PORT);
         
         return result;
     }
@@ -32,7 +33,7 @@ public class Config {
     public RmiProxyFactoryBean pingService() {
         RmiProxyFactoryBean pingService = new RmiProxyFactoryBean();
 
-        pingService.setServiceUrl("rmi://localhost:2020/pingServiceEndpoint");
+        pingService.setServiceUrl(Constants.PING_SERVICE_URI);
         pingService.setServiceInterface(net.codetojoy.common.PingService.class);
         pingService.setRefreshStubOnConnectFailure(true);
 
@@ -50,7 +51,7 @@ public class Config {
     public RmiServiceExporter pongServiceExporter() throws Exception {
         RmiServiceExporter result = new RmiServiceExporter();
 
-        result.setServiceName("pongServiceEndpoint");
+        result.setServiceName(Constants.PONG_SERVICE);
         result.setService(pongService());
         result.setServiceInterface(net.codetojoy.common.PongService.class);
         result.setRegistry(myRegistry().getObject());

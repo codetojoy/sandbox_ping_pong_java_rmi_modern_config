@@ -5,8 +5,6 @@ import net.codetojoy.common.PongService;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import org.springframework.remoting.rmi.RmiProxyFactoryBean;
-
 public class ClientConfiguration {
     private final AnnotationConfigApplicationContext context;
     

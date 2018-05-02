@@ -1,5 +1,7 @@
 package net.codetojoy.server.config;
 
+import net.codetojoy.common.rmi.Constants;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +17,7 @@ class Config {
     public RmiRegistryFactoryBean myRegistry() {
         RmiRegistryFactoryBean result = new RmiRegistryFactoryBean();
 
-        result.setPort(2020);
+        result.setPort(Constants.PORT);
         result.setAlwaysCreate(true);
         
         return result;
