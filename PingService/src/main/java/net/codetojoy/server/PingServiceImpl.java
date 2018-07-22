@@ -5,6 +5,7 @@ import net.codetojoy.server.config.PingConfiguration;
 
 import net.codetojoy.common.*;
 import net.codetojoy.common.rmi.*;
+import net.codetojoy.common.util.*;
 
 public class PingServiceImpl implements PingService {
     private PingConfiguration pingConfiguration = new PingConfiguration();
@@ -13,6 +14,19 @@ public class PingServiceImpl implements PingService {
     public long healthCheck() {
         return System.currentTimeMillis();
     } 
+
+    private PongService getPongServiceWithRetries() {
+        
+        PongService pongService = new RetryLogic<PongService>().attemptWithRetries(
+            new RetryOperation<PongService>() {
+                public PongService execute() throws Exception {
+                    return pingConfiguration.getPongService();
+                }
+            }
+        ); 
+   
+        return pongService;
+    }
 
     @Override
     public Ball ping(Ball ball) {
@@ -25,7 +39,7 @@ public class PingServiceImpl implements PingService {
             Ball newBall = ball.hit(message);
             
             try {
-                PongService pongService = pingConfiguration.getPongService();
+                PongService pongService = getPongServiceWithRetries(); // pingConfiguration.getPongService();
                 result = pongService.pong(newBall);
             } catch (Exception ex) {
                 System.err.println("TRACER caught exception on pong service, so sequence will end here");
@@ -38,13 +52,49 @@ public class PingServiceImpl implements PingService {
         return result;
     }
 
+    private static void exportPingServiceWithRetries(final PingServiceImpl pingServiceImpl) {
+
+        Boolean ignored = new RetryLogic<Boolean>().attemptWithRetries(
+            new RetryOperation<Boolean>() {
+                public Boolean execute() throws Exception {
+                    System.err.println("TRACER attemping export");
+
+                    // this is the server which will listen ... so `main` will not exit
+                    pingServiceImpl.pingConfiguration.getPingServiceExporter();
+                    return true;
+                }
+            }
+        ); 
+   
+        /*
+        final long delayInMillis = 1000;
+        final int maxAttempts = 400;
+        int attemptCount = 0;
+        boolean isOK = false;
+ 
+        while ((attemptCount < maxAttempts) && (! isOK)) {
+            try {
+                System.err.println("TRACER attemping export");
+                // this is the server which will listen ... so `main` will not exit
+                pingServiceImpl.pingConfiguration.getPingServiceExporter();
+                isOK = true;
+            } catch (Exception ex) {
+                System.err.println("TRACER caught exception while trying to export Ping Service");
+                try { Thread.sleep(delayInMillis); } catch (Exception e) {} 
+            }
+            attemptCount++;
+        }
+        */
+    }
+
     public static void main(String[] args) throws Exception {
         System.out.println("\n\nTRACER: PingService starting up...");
 
         PingServiceImpl pingServiceImpl = new PingServiceImpl();
 
+        exportPingServiceWithRetries(pingServiceImpl);
         // this is the server which will listen ... so `main` will not exit
-        pingServiceImpl.pingConfiguration.getPingServiceExporter();
+        // pingServiceImpl.pingConfiguration.getPingServiceExporter();
 
         System.out.println("\n\nTRACER: PingService ready !");
     }

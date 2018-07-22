@@ -10,6 +10,7 @@
     * `Ping` uses `Pong`
     * `Pong` uses `Ping` 
 * The `Ball` info object has a max payload, and `Ping` and `Pong` will stop when the max is reached.
+* JUL-2018: PingService now illustrates retry logic 
 
 ### To Run
 
