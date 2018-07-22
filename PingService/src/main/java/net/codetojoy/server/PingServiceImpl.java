@@ -65,26 +65,6 @@ public class PingServiceImpl implements PingService {
                 }
             }
         ); 
-   
-        /*
-        final long delayInMillis = 1000;
-        final int maxAttempts = 400;
-        int attemptCount = 0;
-        boolean isOK = false;
- 
-        while ((attemptCount < maxAttempts) && (! isOK)) {
-            try {
-                System.err.println("TRACER attemping export");
-                // this is the server which will listen ... so `main` will not exit
-                pingServiceImpl.pingConfiguration.getPingServiceExporter();
-                isOK = true;
-            } catch (Exception ex) {
-                System.err.println("TRACER caught exception while trying to export Ping Service");
-                try { Thread.sleep(delayInMillis); } catch (Exception e) {} 
-            }
-            attemptCount++;
-        }
-        */
     }
 
     public static void main(String[] args) throws Exception {
